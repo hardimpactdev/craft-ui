@@ -11,69 +11,6 @@
   --radius-lg: 0.5rem; /* 8px - Liftoff default */
   --radius-xl: 0.75rem; /* 12px */
 
-  /* Liftoff accent color system - used for primary actions */
-  --color-accent: var(--color-zinc-800);
-  --color-accent-content: var(--color-zinc-800);
-  --color-accent-foreground: var(--color-white);
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-
-  --color-info: var(--info);
-  --color-info-foreground: var(--info-foreground);
-
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
-
-  --color-error: var(--error);
-  --color-error-foreground: var(--error-foreground);
-
-  --color-neutral: var(--neutral);
-  --color-neutral-foreground: var(--neutral-foreground);
-
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
@@ -94,6 +31,67 @@
       height: 0;
     }
   }
+}
+
+/*
+ * Semantic colors for Tailwind utility generation
+ * Using 'initial' tells Tailwind these colors exist so it generates utilities (bg-*, text-*, etc.)
+ * The actual values come from CSS variables defined in :root and .dark below
+ */
+@theme {
+  /* Semantic colors - 'initial' means: generate utilities, use var(--color-*) at runtime */
+  --color-primary: initial;
+  --color-secondary: initial;
+  --color-success: initial;
+  --color-info: initial;
+  --color-warning: initial;
+  --color-error: initial;
+  --color-neutral: initial;
+
+  /* Foreground colors */
+  --color-primary-foreground: initial;
+  --color-secondary-foreground: initial;
+  --color-success-foreground: initial;
+  --color-info-foreground: initial;
+  --color-warning-foreground: initial;
+  --color-error-foreground: initial;
+  --color-neutral-foreground: initial;
+
+  /* Accent colors */
+  --color-accent: initial;
+  --color-accent-foreground: initial;
+
+  /* Layout colors */
+  --color-background: initial;
+  --color-foreground: initial;
+  --color-card: initial;
+  --color-card-foreground: initial;
+  --color-popover: initial;
+  --color-popover-foreground: initial;
+  --color-muted: initial;
+  --color-muted-foreground: initial;
+  --color-destructive: initial;
+  --color-destructive-foreground: initial;
+  --color-border: initial;
+  --color-input: initial;
+  --color-ring: initial;
+
+  /* Chart colors */
+  --color-chart-1: initial;
+  --color-chart-2: initial;
+  --color-chart-3: initial;
+  --color-chart-4: initial;
+  --color-chart-5: initial;
+
+  /* Sidebar colors */
+  --color-sidebar: initial;
+  --color-sidebar-foreground: initial;
+  --color-sidebar-primary: initial;
+  --color-sidebar-primary-foreground: initial;
+  --color-sidebar-accent: initial;
+  --color-sidebar-accent-foreground: initial;
+  --color-sidebar-border: initial;
+  --color-sidebar-ring: initial;
 }
 
 /*
@@ -167,6 +165,50 @@
   --sidebar-accent-foreground: oklch(0.274 0.006 286.033); /* zinc-800 */
   --sidebar-border: oklch(0.94 0.002 286.32); /* lighter zinc border */
   --sidebar-ring: oklch(0.274 0.006 286.033); /* zinc-800 */
+
+  /* Tailwind color mappings - these map --color-* to the base variables above */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-neutral: var(--neutral);
+  --color-neutral-foreground: var(--neutral-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 /* Liftoff dark mode accent colors */
@@ -226,9 +268,11 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-border);
+    outline-color: color-mix(in oklch, var(--color-ring) 50%, transparent);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
 }
