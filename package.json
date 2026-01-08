@@ -25,7 +25,8 @@
     "url": "git+https://github.com/hardimpactdev/liftoff-vue.git"
   },
   "publishConfig": {
-    "@hardimpactdev:registry": "https://npm.pkg.github.com"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "files": [
     "dist"
@@ -45,7 +46,7 @@
       "types": "./dist/src/vite/defineLiftoffConfig.d.ts"
     }
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
