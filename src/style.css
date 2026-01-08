@@ -7,6 +7,46 @@
 
 /*
  * =============================================================================
+ * UTILITY CLASS SAFELIST
+ *
+ * These classes are used by Nuxt UI components (e.g., Button) but aren't
+ * detected during the build because they're defined in JS theme files.
+ * This safelist ensures Tailwind generates them during the liftoff-vue build.
+ * =============================================================================
+ */
+@layer utilities {
+  /* Force generation of semantic color utilities used by Nuxt UI Button */
+  .bg-error { background-color: var(--color-error); }
+  .bg-success { background-color: var(--color-success); }
+  .bg-warning { background-color: var(--color-warning); }
+  .bg-info { background-color: var(--color-info); }
+  .bg-primary { background-color: var(--color-primary); }
+  .bg-secondary { background-color: var(--color-secondary); }
+  .bg-neutral { background-color: var(--color-neutral); }
+
+  .text-error { color: var(--color-error); }
+  .text-success { color: var(--color-success); }
+  .text-warning { color: var(--color-warning); }
+  .text-info { color: var(--color-info); }
+
+  .border-error { border-color: var(--color-error); }
+  .border-success { border-color: var(--color-success); }
+  .border-warning { border-color: var(--color-warning); }
+  .border-info { border-color: var(--color-info); }
+
+  .ring-error { --tw-ring-color: var(--color-error); }
+  .ring-success { --tw-ring-color: var(--color-success); }
+  .ring-warning { --tw-ring-color: var(--color-warning); }
+  .ring-info { --tw-ring-color: var(--color-info); }
+
+  .outline-error { outline-color: var(--color-error); }
+  .outline-success { outline-color: var(--color-success); }
+  .outline-warning { outline-color: var(--color-warning); }
+  .outline-info { outline-color: var(--color-info); }
+}
+
+/*
+ * =============================================================================
  * LIFTOFF UI STYLING FOR NUXT UI
  *
  * This file overrides Nuxt UI component styles to match Liftoff's aesthetic:
