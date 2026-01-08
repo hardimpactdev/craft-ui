@@ -1,0 +1,215 @@
+# Liftoff Vue
+
+A Vue 3 component library for building clean, calm user interfaces. Built on top of [Nuxt UI](https://ui.nuxt.com) with additional layout, navigation, and data visualization components.
+
+## Features
+
+- **Layout Components** - Application shells, sidebars, and navigation
+- **Kanban Board** - Drag-and-drop kanban with vue-draggable-plus
+- **Command Palette** - Keyboard-driven command interface
+- **Charts** - Chart.js integration with clean defaults
+- **Vite Plugin** - Pre-configured setup for Laravel + Inertia apps
+- **Dark Mode** - Full dark mode support across all components
+- **TypeScript** - Fully typed components and utilities
+
+## Installation
+
+```bash
+npm install @hardimpactdev/liftoff-vue
+# or
+bun add @hardimpactdev/liftoff-vue
+```
+
+## Quick Start
+
+### Vite Configuration
+
+Use the provided Vite configuration helper for Laravel + Inertia + Vue apps:
+
+```typescript
+// vite.config.ts
+import { defineLiftoffConfig } from '@hardimpactdev/liftoff-vue/vite';
+
+export default defineLiftoffConfig({
+  laravel: {
+    input: ['resources/js/app.ts'],
+  },
+});
+```
+
+This includes:
+- Laravel Vite plugin
+- Nuxt UI (components without U prefix)
+- TailwindCSS v4
+- Vue dev tools
+- i18n support
+
+### Import Styles
+
+```typescript
+// app.ts
+import '@hardimpactdev/liftoff-vue/style.css';
+```
+
+## Components
+
+### Layout
+
+```vue
+<script setup>
+import { AppShell, AppSidebar, AppContent } from '@hardimpactdev/liftoff-vue';
+</script>
+
+<template>
+  <AppShell>
+    <AppSidebar>
+      <!-- Navigation -->
+    </AppSidebar>
+    <AppContent>
+      <!-- Page content -->
+    </AppContent>
+  </AppShell>
+</template>
+```
+
+### Kanban Board
+
+```vue
+<script setup>
+import {
+  Kanban,
+  KanbanColumn,
+  KanbanColumnHeader,
+  KanbanColumnCards,
+  KanbanCard
+} from '@hardimpactdev/liftoff-vue';
+import { ref } from 'vue';
+
+const todoCards = ref([
+  { id: 1, title: 'Task 1' },
+  { id: 2, title: 'Task 2' },
+]);
+</script>
+
+<template>
+  <Kanban>
+    <KanbanColumn id="todo">
+      <KanbanColumnHeader heading="To Do" :count="todoCards.length" />
+      <KanbanColumnCards v-model="todoCards" group="kanban">
+        <template #card="{ card }">
+          <KanbanCard :id="card.id" :heading="card.title" />
+        </template>
+      </KanbanColumnCards>
+    </KanbanColumn>
+  </Kanban>
+</template>
+```
+
+### Command Palette
+
+```vue
+<script setup>
+import { CommandModal } from '@hardimpactdev/liftoff-vue';
+import { ref } from 'vue';
+
+const isOpen = ref(false);
+const groups = [
+  {
+    id: 'actions',
+    label: 'Actions',
+    items: [
+      { id: 'new', label: 'New Document', icon: 'i-lucide-plus' },
+      { id: 'search', label: 'Search', icon: 'i-lucide-search' },
+    ],
+  },
+];
+</script>
+
+<template>
+  <CommandModal v-model:open="isOpen" :groups="groups" />
+</template>
+```
+
+### Charts
+
+```vue
+<script setup>
+import { ChartLine } from '@hardimpactdev/liftoff-vue';
+
+const data = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  datasets: [{
+    label: 'Revenue',
+    data: [30, 40, 35, 50, 55, 60],
+  }],
+};
+</script>
+
+<template>
+  <ChartLine :data="data" class="h-64" />
+</template>
+```
+
+## Available Components
+
+### Layout
+- `AppShell` - Application shell with sidebar support
+- `AppSidebar` - Collapsible sidebar navigation
+- `AppContent` - Main content area
+- `NavMain` / `NavFooter` / `NavUser` - Navigation components
+- `Breadcrumbs` - Breadcrumb navigation
+- `UserInfo` - User avatar and info display
+
+### Kanban
+- `Kanban` - Main container
+- `KanbanColumn` - Column wrapper
+- `KanbanColumnHeader` - Header with title, count, badge
+- `KanbanColumnCards` - Draggable cards container
+- `KanbanColumnFooter` - Footer slot
+- `KanbanCard` - Individual card
+
+### Command
+- `Command` - Standalone command palette
+- `CommandModal` - Modal version (⌘K shortcut)
+
+### Charts
+- `Chart` - Generic chart component
+- `ChartLine` - Line chart
+- `ChartBar` - Bar chart
+- `ChartArea` - Area chart
+- `ChartPie` - Pie chart
+- `ChartDoughnut` - Doughnut chart
+
+### Utilities
+- `PlaceholderPattern` - SVG pattern for empty states
+- `Icon` - Icon component wrapper
+
+## Composables
+
+- `useAppearance` - Theme/appearance management
+- `useInitials` - Generate initials from names
+- `useLanguage` - Language/locale utilities
+
+## Development
+
+```bash
+# Install dependencies
+bun install
+
+# Run Storybook
+bun run storybook
+
+# Build library
+bun run build
+
+# Run tests
+bun vitest --project=storybook --run
+```
+
+## Documentation
+
+Component documentation is available in Storybook. Run `bun run storybook` to explore components with live examples.
+
+## License
+
+[MIT](LICENSE)
