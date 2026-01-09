@@ -337,13 +337,8 @@ a[data-slot="base"].bg-neutral {
   color: var(--ui-text-inverted, white) !important;
 }
 
-/* Dark mode - solid primary/neutral buttons need dark text on light backgrounds */
-.dark button[data-slot="base"].bg-primary,
-.dark button[data-slot="base"].bg-neutral,
-.dark a[data-slot="base"].bg-primary,
-.dark a[data-slot="base"].bg-neutral {
-  color: var(--ui-text-inverted, oklch(0.141 0.005 285.823)) !important; /* zinc-950 */
-}
+/* Dark mode - solid buttons use theme's --ui-text-inverted or default to white */
+/* Removed dark text override - let themes control this via --ui-text-inverted */
 
 /* Button outline variant - Liftoff uses shadow-xs and darker bottom border */
 button[data-slot="base"].ring-accented,
