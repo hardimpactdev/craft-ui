@@ -34,13 +34,32 @@ interface viteConfigOptions {
 }
 
 export function defineLiftoffConfig(options: viteConfigOptions = {}) {
-    return defineConfig(({ mode }) => ({
-        plugins: [...pluginConfig(options), ...(options.plugins || [])],
-        resolve: {
-            ...aliasConfig(options.aliases, options.ui),
-        },
-        server: getServerConfig(mode),
-    }));
+    return defineConfig(({ mode }) => {
+        const serverConfig = getServerConfig(mode);
+        return {
+            plugins: [
+                ...pluginConfig(options),
+                ...(options.plugins || []),
+                // Plugin to enforce allowedHosts after laravel-vite-plugin
+                // This bypasses Vite's DNS rebinding protection which conflicts with reverse proxy setups
+                {
+                    name: 'liftoff-allowed-hosts',
+                    enforce: 'post' as const,
+                    config() {
+                        return {
+                            server: {
+                                allowedHosts: true as const,
+                            },
+                        };
+                    },
+                },
+            ],
+            resolve: {
+                ...aliasConfig(options.aliases, options.ui),
+            },
+            server: serverConfig,
+        };
+    });
 }
 
 function getServerConfig(mode: string) {
