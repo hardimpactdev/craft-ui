@@ -41,7 +41,11 @@
       "import": "./dist/craft-ui.js",
       "types": "./dist/index.d.ts"
     },
-    "./style.css": "./dist/craft-ui.css",
+    "./style.css": {
+      "style": "./dist/craft-ui.css",
+      "import": "./dist/craft-ui.css",
+      "default": "./dist/craft-ui.css"
+    },
     "./vite": {
       "import": "./dist/vite/defineCraftConfig.js",
       "types": "./dist/src/vite/defineCraftConfig.d.ts"
