@@ -1,27 +1,58 @@
-export function craft() {
-  const plugins = [];
+import type { UserConfig } from 'vite'
 
-  // Core plugin
-  plugins.push({
-    name: 'craft',
-    enforce: 'pre',
-    config() {
-      return {
-        optimizeDeps: {
-          exclude: [
-            '@hardimpactdev/craft-ui',
-            '@tailwindcss/vite',
-            'laravel-vue-i18n/vite'
-          ]
-        }
-      };
+interface CraftConfigOptions {
+  laravel?: {
+    input: string | string[]
+    publicDirectory?: string
+    buildDirectory?: string
+    ssr?: string | string[]
+    ssrOutputDirectory?: string
+    refresh?: boolean | string | string[]
+    hotFile?: string
+    detectTls?: string | boolean
+    valetTls?: string | boolean
+    transformOnServe?: (code: string, url: string) => string
+  }
+}
+
+export function defineCraftConfig(options: CraftConfigOptions = {}): UserConfig {
+  const laravelConfig = options.laravel ?? {
+    input: ['resources/js/app.ts'],
+  }
+
+  return {
+    plugins: [
+      // These will be dynamically imported by the consuming app
+      // We provide the config structure, they provide the actual plugins
+    ],
+    optimizeDeps: {
+      exclude: [
+        '@hardimpactdev/craft-ui',
+        '@tailwindcss/vite',
+        'laravel-vue-i18n/vite'
+      ]
     },
+    // Store laravel config for the consuming app to use
+    define: {
+      __CRAFT_LARAVEL_CONFIG__: JSON.stringify(laravelConfig)
+    }
+  }
+}
+
+/**
+ * Craft Vite plugin that provides virtual module for app initialization
+ */
+export function craft() {
+  return {
+    name: 'craft',
+    enforce: 'pre' as const,
 
     resolveId(id: string) {
       if (id === 'virtual:craft') {
-        return id;
+        return id
       }
     },
+
     load(id: string) {
       if (id === 'virtual:craft') {
         return `
@@ -100,10 +131,5 @@ export function craft() {
           }`;
       }
     },
-  });
-
-  // Add other plugins
-  // plugins.push(plugin());
-
-  return plugins;
+  }
 }
