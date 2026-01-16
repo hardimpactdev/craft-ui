@@ -21,32 +21,16 @@ interface viteConfigOptions {
 }
 
 export function defineCraftConfig(options: viteConfigOptions = {}) {
-    return defineConfig(({ mode }) => {
-        const serverConfig = getServerConfig(mode);
-        return {
-            plugins: [
-                ...pluginConfig(options),
-                ...(options.plugins || []),
-                // Plugin to enforce allowedHosts after laravel-vite-plugin
-                // This bypasses Vite's DNS rebinding protection which conflicts with reverse proxy setups
-                {
-                    name: 'craft-allowed-hosts',
-                    enforce: 'post' as const,
-                    config() {
-                        return {
-                            server: {
-                                allowedHosts: true as const,
-                            },
-                        };
-                    },
-                },
-            ],
-            resolve: {
-                ...aliasConfig(options.aliases, options.ui),
-            },
-            server: serverConfig,
-        };
-    });
+    return defineConfig(({ mode }) => ({
+        plugins: [
+            ...pluginConfig(options),
+            ...(options.plugins || []),
+        ],
+        resolve: {
+            ...aliasConfig(options.aliases, options.ui),
+        },
+        server: getServerConfig(mode),
+    }));
 }
 
 function getServerConfig(mode: string) {
@@ -65,7 +49,6 @@ function getServerConfig(mode: string) {
         return {
             host: '0.0.0.0',
             origin: appUrl,
-            allowedHosts: true as const,
             hmr: {
                 host: url.hostname,
                 protocol: isHttps ? 'wss' : 'ws',
