@@ -1,7 +1,10 @@
 export const styles = () => import('./src/style.css');
 
 // Layouts
+import AuthLayout from './src/layouts/auth/AuthLayout.vue';
 import AuthSimpleLayout from './src/layouts/auth/AuthSimpleLayout.vue';
+import AuthCardLayout from './src/layouts/auth/AuthCardLayout.vue';
+import AuthSplitLayout from './src/layouts/auth/AuthSplitLayout.vue';
 // import AppLayout from './src/layouts/app/AppLayout.vue';
 // import AppSidebarLayout from './src/layouts/app/AppSidebarLayout.vue';
 import SettingsLayout from './src/layouts/settings/SettingsLayout.vue';
@@ -86,6 +89,9 @@ export * from "./src/components/toggle";
 export * from "./src/components/toggle-group";
 export * from "./src/components/tooltip";
 
+// Auth Pages
+export * from "./src/pages/auth";
+
 export {
     // Plugins
     i18n,
@@ -94,8 +100,10 @@ export {
     __,
     can,
     // Layouts
-    // Layouts
+    AuthLayout,
     AuthSimpleLayout,
+    AuthCardLayout,
+    AuthSplitLayout,
     // AppLayout,
     // AppSidebarLayout,
     SettingsLayout,

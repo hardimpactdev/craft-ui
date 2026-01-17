@@ -5,6 +5,7 @@ import { setup } from '@storybook/vue3-vite';
 import { withThemeByClassName } from '@storybook/addon-themes';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import NuxtLinkMock from './nuxt-link-mock';
+import InertiaLinkMock from './inertia-link-mock';
 import '../src/style.css';
 import 'vue-sonner/style.css';
 
@@ -17,9 +18,10 @@ const mockRouter = createRouter({
   ],
 });
 
-// Register NuxtLink mock and vue-router globally
+// Register NuxtLink mock, Inertia Link mock, and vue-router globally
 setup((app) => {
   // app.component('NuxtLink', NuxtLinkMock);
+  app.component('Link', InertiaLinkMock);
   app.use(mockRouter);
 });
 
