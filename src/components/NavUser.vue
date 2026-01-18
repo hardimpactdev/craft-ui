@@ -17,6 +17,8 @@ import type { User } from '@/types';
 
 defineProps<{
   user: User;
+  onSettings?: () => void;
+  onLogout?: () => void;
 }>();
 </script>
 
@@ -39,7 +41,7 @@ defineProps<{
           align="end"
           :side-offset="4"
         >
-          <UserMenuContent :user="user" />
+          <UserMenuContent :user="user" :on-settings="onSettings" :on-logout="onLogout" />
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>
