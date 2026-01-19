@@ -25,6 +25,10 @@ withDefaults(
     user?: User;
     /** Home/dashboard URL */
     homeUrl?: string;
+    /** Callback when settings is clicked */
+    onSettings?: () => void;
+    /** Callback when logout is clicked */
+    onLogout?: () => void;
   }>(),
   {
     mainNavItems: () => [],
@@ -56,7 +60,7 @@ withDefaults(
 
     <SidebarFooter>
       <NavFooter :items="footerNavItems" />
-      <NavUser v-if="user" :user="user" />
+      <NavUser v-if="user" :user="user" :on-settings="onSettings" :on-logout="onLogout" />
     </SidebarFooter>
   </Sidebar>
   <slot />

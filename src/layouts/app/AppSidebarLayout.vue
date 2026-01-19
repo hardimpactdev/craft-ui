@@ -17,6 +17,10 @@ withDefaults(
     user?: User;
     /** Home/dashboard URL */
     homeUrl?: string;
+    /** Callback when settings is clicked */
+    onSettings?: () => void;
+    /** Callback when logout is clicked */
+    onLogout?: () => void;
   }>(),
   {
     breadcrumbs: () => [],
@@ -34,6 +38,8 @@ withDefaults(
       :footer-nav-items="footerNavItems"
       :user="user"
       :home-url="homeUrl"
+      :on-settings="onSettings"
+      :on-logout="onLogout"
     >
       <template #logo>
         <slot name="logo" />
