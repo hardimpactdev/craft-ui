@@ -39,6 +39,7 @@ import i18n from './src/plugins/i18n.ts';
 
 // Composables
 import { useAppearance } from './src/composables/useAppearance.ts';
+import { useAppNavigation } from './src/composables/useAppNavigation.ts';
 import { useInitials } from './src/composables/useInitials.ts';
 import { useLanguage } from './src/composables/useLanguage.ts';
 
@@ -156,6 +157,7 @@ export {
     DeleteUser,
     // Composables
     useAppearance,
+    useAppNavigation,
     useInitials,
     useLanguage,
 };
