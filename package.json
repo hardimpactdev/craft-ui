@@ -69,7 +69,11 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "test": "vitest --project=unit --run",
+    "test:watch": "vitest --project=unit",
+    "test:storybook": "vitest --project=storybook --run",
+    "test:all": "vitest --run"
   },
   "dependencies": {
     "@iconify/vue": "^5.0.0",
@@ -116,6 +120,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "@vue/tsconfig": "^0.8.1",
     "glob": "^13.0.0",
+    "happy-dom": "^20.3.3",
     "oxfmt": "^0.24.0",
     "playwright": "^1.57.0",
     "storybook": "^10.1.11",

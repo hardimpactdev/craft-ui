@@ -70,17 +70,17 @@ function getArtisanRunners() {
         {
             name: 'waymaker',
             run: ['php', 'artisan', 'waymaker:generate'],
-            pattern: ['app/**/Http/**/*.php'],
+            pattern: ['app/**/Http/**/*.php', 'src/**/Http/**/*.php'],
         },
         {
             name: 'wayfinder',
             run: ['php', 'artisan', 'wayfinder:generate'],
-            pattern: ['routes/*.php', 'app/**/Http/**/*.php'],
+            pattern: ['routes/*.php', 'app/**/Http/**/*.php', 'src/**/Http/**/*.php'],
         },
         {
             name: 'typescript',
             run: ['php', 'artisan', 'typescript:transform'],
-            pattern: ['app/{Data,Enums}/**/*.php'],
+            pattern: ['app/{Data,Enums}/**/*.php', 'src/{Data,Enums}/**/*.php'],
         },
     ]);
 }
