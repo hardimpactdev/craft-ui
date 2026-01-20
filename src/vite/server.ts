@@ -14,7 +14,13 @@ export function getServerConfig(mode: string): ServerOptions {
     const appUrl = env.VITE_APP_URL;
 
     if (!appUrl) {
-        return { host: '0.0.0.0' };
+        return {
+            host: '0.0.0.0',
+            watch: {
+                followSymlinks: false,
+                ignored: ['**/vendor/**', '**/node_modules/**'],
+            },
+        };
     }
 
     try {
@@ -35,8 +41,20 @@ export function getServerConfig(mode: string): ServerOptions {
                 protocol: isHttps ? 'wss' : 'ws',
                 clientPort: isHttps ? 443 : (parseInt(url.port) || 80),
             },
+
+            // Prevent ELOOP errors from circular symlinks in workspaces
+            watch: {
+                followSymlinks: false,
+                ignored: ['**/vendor/**', '**/node_modules/**'],
+            },
         };
     } catch {
-        return { host: '0.0.0.0' };
+        return {
+            host: '0.0.0.0',
+            watch: {
+                followSymlinks: false,
+                ignored: ['**/vendor/**', '**/node_modules/**'],
+            },
+        };
     }
 }
