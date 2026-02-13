@@ -4,12 +4,11 @@ import { TooltipProvider } from 'reka-ui';
 import { setup } from '@storybook/vue3-vite';
 import { withThemeByClassName } from '@storybook/addon-themes';
 import { createRouter, createMemoryHistory } from 'vue-router';
-import NuxtLinkMock from './nuxt-link-mock';
 import InertiaLinkMock from './inertia-link-mock';
 import '../src/style.css';
 import 'vue-sonner/style.css';
 
-// Create a mock router for Storybook (Nuxt UI Link component uses vue-router)
+// Create a mock router for Storybook
 const mockRouter = createRouter({
   history: createMemoryHistory(),
   routes: [
@@ -18,14 +17,13 @@ const mockRouter = createRouter({
   ],
 });
 
-// Register NuxtLink mock, Inertia Link mock, and vue-router globally
+// Register Inertia Link mock and vue-router globally
 setup((app) => {
-  // app.component('NuxtLink', NuxtLinkMock);
   app.component('Link', InertiaLinkMock);
   app.use(mockRouter);
 });
 
-// Global decorator to wrap all stories with TooltipProvider for Nuxt UI components
+// Global decorator to wrap all stories with TooltipProvider
 const withTooltipProvider = (story: any) => {
   return defineComponent({
     components: { TooltipProvider },

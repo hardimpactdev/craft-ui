@@ -1,4 +1,4 @@
-This is a Storybook project which manages the Craft UI library. The library provides Vue.js components, composables, and utilities for rapidly building user interfaces with the Craft stack.
+This is a Storybook project which manages the Craft UI library. The library provides Vue.js components, composables, and utilities for rapidly building user interfaces with the Craft stack using Reka UI primitives and shadcn-vue styling patterns.
 
 ## Design Principles
 
@@ -68,18 +68,16 @@ Polish separates good from great.
 
 ## Technologies Used
 
-### Nuxt UI
+### Reka UI
 
-UI components are provided by [Nuxt UI](https://ui.nuxt.com). Components are auto-imported without the `U` prefix when using the Vite plugin.
+UI primitives are provided by [Reka UI](https://reka-ui.com) - a headless, accessible component library for Vue. Components are built using shadcn-vue patterns with class-variance-authority for type-safe styling variants.
 
-**IMPORTANT: Avoid Nuxt-specific composables**
+**Component Architecture**
 
-This library runs outside of Nuxt (in Storybook and Laravel/Inertia apps). Do NOT use Nuxt-specific composables like:
-- `useLocale` - Use `laravel-vue-i18n` or plain i18n instead
-- `useNuxtApp`, `useRuntimeConfig`, `useState` - Not available outside Nuxt
-- `defineShortcuts` - Not available outside Nuxt
-
-For Storybook compatibility, these are stubbed in `.storybook/nuxt-imports-mock.ts` but should never be used in actual component code.
+- **Reka UI primitives** - Headless, accessible base components (Tooltip, Dialog, Select, etc.)
+- **shadcn-vue patterns** - Class variance authority for variants, `cn()` utility for class merging
+- **Tailwind CSS v4** - Utility-first styling with CSS variables
+- **No auto-imports** - Components must be explicitly imported from the package
 
 ### Storybook
 
@@ -125,7 +123,7 @@ The bun runtime is being used instead of node.
 - `./src/layouts` - Layout components for apps
 - `./src/vite` - Vite plugin configuration
 - `./src/lib` - Utility functions (cn, __, can)
-- `./src/stories` - Nuxt UI component stories
+- `./src/stories` - Component stories and examples
 - `./.storybook` - Storybook configuration and mocks
 - `index.ts` - Main exports
 
@@ -153,12 +151,12 @@ bun vitest --project=storybook
 | `vitest.config.ts` | Vitest configuration with Storybook project |
 | `.storybook/vitest.setup.ts` | Test setup file |
 | `.storybook/inertia-mock.ts` | Mock data for Inertia-dependent components |
-| `.storybook/nuxt-link-mock.ts` | Mock NuxtLink for Storybook |
+| `.storybook/inertia-link-mock.ts` | Mock Inertia Link for Storybook |
 | `.storybook/preview.ts` | Global setup with vue-router mock |
 
 ### Storybook Mocks
 
-**Vue Router**: Storybook includes a mock vue-router (`createMemoryHistory`) in `preview.ts` because Nuxt UI's `<Link>` component uses `useRoute()` internally. This is set up globally - no action needed in stories.
+**Vue Router**: Storybook includes a mock vue-router (`createMemoryHistory`) in `preview.ts` for components that use `useRoute()` internally. This is set up globally - no action needed in stories.
 
 **Inertia**: Components using `usePage()` or `useForm()` from Inertia need special handling:
 - Components like `AppShell` have been made defensive - they check for injected state first, then try `usePage()` with a fallback
@@ -186,19 +184,21 @@ When creating new components, apply aria labels for screen reader support:
 
 ## UI Components
 
-This package uses Nuxt UI for UI primitives. Components are auto-imported in consuming apps via the Vite plugin:
+This package uses Reka UI for accessible primitives and shadcn-vue for styling patterns. Components must be imported explicitly:
 
 ```vue
+<script setup>
+import { Button } from '@hardimpactdev/craft-ui'
+import { Input } from '@hardimpactdev/craft-ui'
+</script>
+
 <template>
-  <!-- No import needed, components are auto-imported -->
   <Button>Click me</Button>
-  <Card>
-    <Input v-model="value" />
-  </Card>
+  <Input v-model="value" />
 </template>
 ```
 
-See [Nuxt UI documentation](https://ui.nuxt.com) for available components.
+See [Reka UI documentation](https://reka-ui.com) for available primitives.
 
 ## Vite Plugin
 
@@ -217,14 +217,14 @@ export default defineCraftConfig({
 
 The plugin includes:
 - Laravel Vite plugin
-- Nuxt UI plugin (components without U prefix)
+- Tailwind CSS v4 with custom theme variables
 - TailwindCSS
 - Vue dev tools
 - i18n support
 
 ## Custom Components
 
-Craft provides custom components built on top of Nuxt UI:
+Craft provides custom components built on top of Reka UI primitives:
 
 ### Layout Components
 - **AppShell** - Application shell with sidebar support
@@ -258,7 +258,7 @@ Drag-and-drop kanban board powered by vue-draggable-plus.
 ```
 
 ### Command Components
-Command palette wrapper around Nuxt UI's CommandPalette.
+Command palette built with Reka UI Command primitive and shadcn-vue patterns.
 
 - **Command** - Standalone command palette
 - **CommandModal** - Modal version with keyboard shortcut (⌘K)
@@ -293,268 +293,31 @@ Chart.js integration with Craft-style defaults.
 </div>
 ```
 
-## Customizing Nuxt UI Components
+## Theming Components
 
 The theme uses a clean, modern design with subtle borders and zinc neutrals.
 
 ### Architecture Overview
 
-Nuxt UI theming involves three layers:
+Theming involves two layers:
 
-1. **Nuxt UI Plugin Config** (`src/vite/defineCraftConfig.ts` & `.storybook/main.ts`)
-2. **CSS Variables** (`src/theme.css`)
-3. **Component Overrides** (`src/style.css`)
+1. **CSS Variables** (`src/theme.css`) - Base color palette
+2. **Component Styles** (`src/style.css`) - Component-specific styling
 
-### Understanding Nuxt UI Component Structure
+### Component Structure
 
-Nuxt UI components use `data-slot` attributes and ARIA roles to identify parts. The key selectors are:
+Components use `data-slot` attributes for part identification and class-variance-authority for type-safe variants:
 
 | Selector | Element | Used In |
 |----------|---------|---------|
-| `[data-slot="base"]` | Main interactive element | Button, Input, Checkbox, Radio |
-| `[data-slot="root"]` | Wrapper container | Input, Checkbox, Card |
-| `[data-slot="content"]` | Content container | Tooltip, Modal, Menu, Dropdown |
-| `[data-slot="label"]` | Label element | Form fields |
-| `[data-slot="item"]` | List items | Menu, Select |
-| `[role="combobox"]` | Select trigger button | Select component |
-| `[role="listbox"]` | Dropdown options container | Select dropdown |
-| `[role="option"]` | Individual options | Select options |
-| `.bg-primary`, `.bg-success`, etc. | Color variant classes | Solid buttons |
-| `.bg-default` | Default background | Cards, dropdowns |
-| `.rounded-sm` | Small radius (checkbox) | Checkbox |
-| `.rounded-full` | Full radius (radio) | Radio, Switch |
+| `[data-slot="button"]` | Button element | Button |
+| `[data-slot="input"]` | Input element | Input |
+| `[data-slot="alert"]` | Alert container | Alert |
+| `[data-slot="card"]` | Card container | Card |
 
-### 1. Nuxt UI Plugin Configuration
+### 1. CSS Variables (`src/theme.css`)
 
-Configure semantic colors in the Vite plugin. All semantic colors must be mapped to available Tailwind color palettes:
-
-```typescript
-// src/vite/defineCraftConfig.ts
-ui({
-  prefix: '',
-  inertia: true,
-  ui: {
-    colors: {
-      primary: 'zinc',      // Main action color (dark zinc buttons)
-      secondary: 'zinc',    // Secondary actions (medium gray)
-      success: 'green',     // Success states
-      info: 'blue',         // Informational states
-      warning: 'orange',    // Warning states
-      error: 'red',         // Error states
-      neutral: 'zinc',      // Neutral/default color
-    },
-  },
-}),
-```
-
-**Available color palettes** (TailwindCSS v4 default): `blue`, `gray`, `green`, `orange`, `purple`, `red`, `zinc`
-
-**Note:** Colors like `emerald`, `amber`, `sky` are NOT available by default in Tailwind v4. Use the base colors above.
-
-### 2. Nuxt UI CSS Variables
-
-Override Nuxt UI's internal variables in `src/style.css`:
-
-```css
-@layer theme {
-  :host, :root, .light {
-    /* Border colors */
-    --ui-border: oklch(0.92 0.004 286.32);        /* Main border (zinc-200) */
-    --ui-border-muted: oklch(0.94 0.002 286.32);  /* Subtle borders */
-    --ui-border-accented: oklch(0.87 0.006 286);  /* Emphasized (bottom borders, zinc-300) */
-
-    /* Background colors */
-    --ui-bg: oklch(1 0 0);                        /* white */
-    --ui-bg-muted: oklch(0.985 0.004 286.32);     /* zinc-50 */
-    --ui-bg-elevated: oklch(1 0 0);               /* white */
-    --ui-bg-accented: oklch(0.967 0.001 286.375); /* zinc-100 (hover states) */
-    --ui-bg-inverted: oklch(0.274 0.006 286.033); /* zinc-800 */
-
-    /* Text colors */
-    --ui-text: oklch(0.141 0.005 285.823);        /* zinc-950 */
-    --ui-text-muted: oklch(0.552 0.016 285.938);  /* zinc-500 */
-    --ui-text-dimmed: oklch(0.705 0.015 286.067); /* zinc-400 (placeholder) */
-    --ui-text-highlighted: oklch(0.141 0.005 285.823); /* zinc-950 */
-    --ui-text-inverted: oklch(1 0 0);             /* white */
-
-    /* Color mappings for bg-default class (dropdowns, popovers) */
-    --color-default: oklch(1 0 0);                /* white */
-
-    /* Radius */
-    --ui-radius: 0.5rem;  /* Base radius (8px) */
-  }
-
-  .dark {
-    /* Borders */
-    --ui-border: oklch(0.370 0.013 285.805);      /* zinc-700 */
-    --ui-border-muted: oklch(0.32 0.008 286);
-    --ui-border-accented: oklch(0.455 0.014 285.82); /* zinc-600 */
-
-    /* Backgrounds */
-    --ui-bg: oklch(0.141 0.005 285.823);          /* zinc-950 */
-    --ui-bg-muted: oklch(0.210 0.006 285.885);    /* zinc-900 */
-    --ui-bg-elevated: oklch(0.274 0.006 286.033); /* zinc-800 */
-    --ui-bg-accented: oklch(0.370 0.013 285.805); /* zinc-700 */
-    --ui-bg-inverted: oklch(0.985 0.004 286.32);  /* zinc-50 */
-
-    /* Text colors */
-    --ui-text: oklch(0.985 0.004 286.32);         /* zinc-50 */
-    --ui-text-muted: oklch(0.705 0.015 286.067);  /* zinc-400 */
-    --ui-text-dimmed: oklch(0.552 0.016 285.938); /* zinc-500 */
-    --ui-text-highlighted: oklch(1 0 0);          /* white */
-    --ui-text-inverted: oklch(0.141 0.005 285.823); /* zinc-950 */
-
-    /* Color mappings for bg-default class */
-    --color-default: oklch(0.274 0.006 286.033);  /* zinc-800 */
-  }
-}
-```
-
-### 3. Component-Specific Styling
-
-Target Nuxt UI components using `data-slot` attributes and class selectors:
-
-#### Buttons
-
-```css
-/* All buttons - base sizing */
-button[data-slot="base"] {
-  min-height: 2.5rem;           /* 40px - Craft base height */
-  padding-left: 1rem;           /* px-4 */
-  padding-right: 1rem;
-  border-radius: 0.5rem;        /* rounded-lg */
-  font-weight: 500;             /* font-medium */
-}
-
-/* Solid variant - inset highlight for ALL color variants */
-button[data-slot="base"].bg-primary,
-button[data-slot="base"].bg-secondary,
-button[data-slot="base"].bg-success,
-button[data-slot="base"].bg-warning,
-button[data-slot="base"].bg-error,
-button[data-slot="base"].bg-info,
-button[data-slot="base"].bg-neutral,
-button[data-slot="base"].bg-inverted {
-  box-shadow:
-    inset 0px 1px 0px 0px rgba(255, 255, 255, 0.2),
-    0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* Outline variant - subtle shadow */
-button[data-slot="base"].ring-accented {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-/* Dark mode - no shadows on any solid button */
-.dark button[data-slot="base"].bg-primary,
-.dark button[data-slot="base"].bg-secondary,
-.dark button[data-slot="base"].bg-success,
-.dark button[data-slot="base"].bg-warning,
-.dark button[data-slot="base"].bg-error,
-.dark button[data-slot="base"].bg-info,
-.dark button[data-slot="base"].bg-neutral,
-.dark button[data-slot="base"].bg-inverted {
-  box-shadow: none;
-  border: none;
-}
-```
-
-#### Inputs
-
-```css
-input[data-slot="base"],
-textarea[data-slot="base"] {
-  min-height: 2.5rem;           /* 40px */
-  border-radius: 0.5rem;        /* rounded-lg */
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--ui-border);
-  border-bottom-color: var(--ui-border-accented); /* Darker bottom */
-}
-
-.dark input[data-slot="base"] {
-  box-shadow: none;
-  border-bottom-color: var(--ui-border);
-}
-```
-
-#### Checkboxes
-
-```css
-/* Checkboxes use rounded-sm class */
-button[data-slot="base"].rounded-sm {
-  width: 1.125rem;              /* 18px - Craft size */
-  height: 1.125rem;
-  border-radius: 0.3rem;        /* Craft rounded-[.3rem] */
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid oklch(0.752 0.012 285.895); /* zinc-300 */
-}
-
-/* Checked state */
-button[data-slot="base"].rounded-sm.bg-primary {
-  box-shadow: none;
-  border-color: transparent;
-}
-```
-
-#### Cards
-
-```css
-div[data-slot="root"].rounded-lg,
-div[data-slot="root"].border,
-div[data-slot="root"].bg-default {
-  border-radius: 0.75rem;       /* rounded-xl */
-  box-shadow: none;             /* No shadow */
-  border: 1px solid var(--ui-border) !important; /* Visible border */
-}
-
-.dark div[data-slot="root"].rounded-lg,
-.dark div[data-slot="root"].border {
-  border-color: oklch(1 0 0 / 0.1) !important; /* white/10 */
-}
-```
-
-#### Select/Dropdown
-
-```css
-/* Select trigger - uses role="combobox" */
-button[data-slot="base"][role="combobox"],
-button[data-slot="base"][aria-haspopup="listbox"],
-button[data-slot="base"][aria-haspopup="menu"] {
-  min-height: 2.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid var(--ui-border) !important;
-  border-bottom-color: var(--ui-border-accented) !important;
-  padding-left: 0.75rem !important;
-  padding-right: 2.5rem !important; /* pe-10 = 40px for chevron space */
-}
-
-/* Dropdown content - light background */
-[data-slot="content"].bg-default,
-[role="listbox"].bg-default {
-  background-color: var(--ui-bg) !important;
-  color: var(--ui-text) !important;
-  border: 1px solid var(--ui-border) !important;
-}
-
-/* Option hover state */
-[data-slot="content"] [role="option"]:hover,
-[data-slot="content"] [role="option"][data-highlighted],
-[role="listbox"] [role="option"]:hover,
-[role="listbox"] [role="option"][data-highlighted] {
-  background-color: var(--ui-bg-accented) !important; /* zinc-100 */
-}
-
-.dark [data-slot="content"].bg-default,
-.dark [role="listbox"].bg-default {
-  background-color: var(--ui-bg-elevated) !important; /* zinc-800 */
-}
-```
-
-### 4. Theme CSS Variables (`src/theme.css`)
-
-Base color palette and accent system:
+Base color palette and design tokens:
 
 ```css
 @theme inline {
@@ -562,70 +325,136 @@ Base color palette and accent system:
   --color-accent: var(--color-zinc-800);
   --color-accent-content: var(--color-zinc-800);
   --color-accent-foreground: var(--color-white);
+  --color-muted: var(--color-zinc-100);
+  --color-muted-foreground: var(--color-zinc-500);
+  --color-border: var(--color-zinc-200);
+  --color-ring: var(--color-zinc-400);
 }
 
 @layer theme {
+  :root {
+    --background: oklch(1 0 0);                     /* white */
+    --foreground: oklch(0.141 0.005 285.823);       /* zinc-950 */
+    --primary: oklch(0.274 0.006 286.033);          /* zinc-800 */
+    --border: oklch(0.94 0.002 286.32);             /* soft border */
+    --radius: 0.5rem;                               /* 8px */
+  }
+
   .dark {
+    --background: oklch(0.141 0.005 285.823);       /* zinc-950 */
+    --foreground: oklch(0.985 0.004 286.32);        /* zinc-50 */
+    --primary: oklch(0.985 0.004 286.32);           /* white */
+    --border: oklch(0.370 0.013 285.805);           /* zinc-700 */
     --color-accent: var(--color-white);
-    --color-accent-content: var(--color-white);
     --color-accent-foreground: var(--color-zinc-800);
   }
 }
+```
 
-:root {
-  --background: oklch(1 0 0);                     /* white */
-  --foreground: oklch(0.141 0.005 285.823);       /* zinc-950 */
-  --primary: oklch(0.274 0.006 286.033);          /* zinc-800 */
-  --border: oklch(0.94 0.002 286.32);             /* soft border */
-  --radius: 0.5rem;                               /* 8px */
-}
+### 2. Component Variants
+
+Components use class-variance-authority for type-safe variants:
+
+```typescript
+// src/components/button/buttonVariants.ts
+import { cva } from "class-variance-authority"
+
+export const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-white hover:bg-destructive/90",
+        outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-9 px-4 py-2",
+        sm: "h-8 rounded-md px-3",
+        lg: "h-10 rounded-md px-6",
+        icon: "h-9 w-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+```
+
+### 3. Component-Specific Styling
+
+Style components using Tailwind utilities in their respective files:
+
+#### Button
+
+```vue
+<template>
+  <Primitive
+    data-slot="button"
+    :class="cn(buttonVariants({ variant, size }), props.class)"
+  >
+    <slot />
+  </Primitive>
+</template>
+```
+
+#### Input
+
+```vue
+<template>
+  <input
+    data-slot="input"
+    :class="cn(
+      'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground',
+      'border-input h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs',
+      'focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+      props.class,
+    )"
+  >
+</template>
 ```
 
 ### Key Files Reference
 
 | File | Purpose |
 |------|---------|
-| `src/style.css` | Nuxt UI variable overrides, component styling |
-| `src/theme.css` | Base color palette, accent colors, fonts |
-| `src/vite/defineCraftConfig.ts` | Nuxt UI plugin config for consuming apps |
-| `.storybook/main.ts` | Nuxt UI plugin config for Storybook |
+| `src/style.css` | Global styles and Tailwind imports |
+| `src/theme.css` | Base color palette and CSS variables |
+| `src/lib/cn.ts` | Class merging utility (clsx + tailwind-merge) |
+| `src/components/*/variants.ts` | Component variant definitions |
 
 ### Common Customization Tasks
 
-**Change primary button color:**
-1. Update `ui.colors.primary` in plugin config
-2. Update `--color-accent` in `theme.css`
-3. Update `--primary` in `theme.css`
+**Change primary color:**
+1. Update `--primary` in `src/theme.css`
+2. Update `--color-accent` values
 
 **Adjust border softness:**
-1. Modify `--ui-border` in `style.css`
-2. Higher OKLCH lightness = softer (0.94 is very soft, 0.87 is more visible)
+1. Modify `--border` in `src/theme.css`
+2. Higher OKLCH lightness = softer
 
 **Change border radius:**
-1. Update `--ui-radius` in `style.css` for Nuxt UI components
-2. Update `--radius` in `theme.css` for custom components
+1. Update `--radius` in `src/theme.css`
+2. Update variant definitions in component files
 
-**Add/remove shadows:**
-1. Target components with `[data-slot="base"]` selectors
-2. Use `box-shadow: none` to remove, `shadow-xs` equivalent to add
+**Add component variants:**
+1. Edit the variant object in the component's variants file
+2. Use `cva` for type-safe variant definitions
 
-**Modify component heights:**
-1. Use `min-height` on `button[data-slot="base"]` or `input[data-slot="base"]`
-2. Adjust padding accordingly
-
-**Fix dropdown/select backgrounds:**
-1. Ensure `--ui-bg` and `--color-default` are defined in `:root`
-2. Target `[data-slot="content"].bg-default` for dropdown containers
-3. Target `[role="option"]` for individual options
-
-**Add button inset shadow to new color:**
-1. Add the color class to the solid button selector list (e.g., `.bg-custom`)
-2. Add corresponding dark mode selector to remove shadow
+**Style with data-slot:**
+1. Components expose `data-slot` attributes for targeting
+2. Use these in global CSS for cross-cutting concerns
 
 ### Useful Resources
 
-- [Nuxt UI Theme Docs](https://ui.nuxt.com/getting-started/theme)
-- [Nuxt UI Components](https://ui.nuxt.com/components)
+- [Reka UI Docs](https://reka-ui.com) - Headless primitives
+- [shadcn-vue](https://www.shadcn-vue.com) - Component patterns
+- [class-variance-authority](https://cva.style) - Type-safe variants
 - [OKLCH Color Picker](https://oklch.com/) - For generating color values
 - [Tailwind CSS](https://tailwindcss.com/docs) - Utility classes reference
 

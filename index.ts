@@ -75,6 +75,7 @@ export * from "./src/components/context-menu";
 export * from "./src/components/dialog";
 export * from "./src/components/drawer";
 export * from "./src/components/dropdown-menu";
+export * from "./src/components/editor";
 export * from "./src/components/empty";
 export * from "./src/components/field";
 export * from "./src/components/form";
@@ -114,6 +115,9 @@ export * from "./src/components/textarea";
 export * from "./src/components/toggle";
 export * from "./src/components/toggle-group";
 export * from "./src/components/tooltip";
+
+// AI Components
+export * from "./src/components/ai";
 
 // Auth Pages
 export * from "./src/pages/auth";

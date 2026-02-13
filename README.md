@@ -1,6 +1,6 @@
 # Craft UI
 
-A Vue 3 component library for building clean, calm user interfaces. Built on top of [Nuxt UI](https://ui.nuxt.com) with additional layout, navigation, and data visualization components.
+A Vue 3 component library for building clean, calm user interfaces. Built with [Reka UI](https://reka-ui.com) primitives and shadcn-vue styling patterns, with additional layout, navigation, and data visualization components.
 
 ## Features
 
@@ -39,7 +39,6 @@ export default defineCraftConfig({
 
 This includes:
 - Laravel Vite plugin
-- Nuxt UI (components without U prefix)
 - TailwindCSS v4
 - Vue dev tools
 - i18n support
@@ -243,10 +242,12 @@ function showToast() {
 - `__` - Translation helper (from laravel-vue-i18n)
 - `can` - Permission check utility
 
-## Nuxt UI Re-exports
+## Component Library
 
-The library re-exports commonly used Nuxt UI components:
-- `Button`, `Input`, `Checkbox`, `Select`, `Textarea`, `FormField`
+The library provides shadcn-vue style components built on Reka UI primitives:
+- `Button`, `Input`, `Checkbox`, `Select`, `Textarea`
+- Layout components: `AppShell`, `AppSidebar`, `NavMain`, etc.
+- Advanced components: `Kanban`, `Command`, `Chart`
 
 ## Development
 

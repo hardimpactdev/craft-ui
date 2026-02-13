@@ -1,16 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/vue3';
 import { fn, within, userEvent, expect } from 'storybook/test';
 import { ref, reactive, toRefs } from 'vue';
-import Modal from '@nuxt/ui/components/Modal.vue';
-import Button from '@nuxt/ui/components/Button.vue';
-import Input from '@nuxt/ui/components/Input.vue';
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './dialog';
+import { Button } from './button';
+import { Input } from './input';
 import HeadingSmall from './HeadingSmall.vue';
 import InputError from './InputError.vue';
 
 // Create a mock version of DeleteUser that doesn't use Inertia's useForm
 const DeleteUserMock = {
   name: 'DeleteUserMock',
-  components: { HeadingSmall, InputError, Modal, Button, Input },
+  components: { HeadingSmall, InputError, Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription, DialogFooter, Button, Input },
   props: {
     route: {
       type: Object,
@@ -79,19 +79,21 @@ const DeleteUserMock = {
           <p class="text-sm">Please proceed with caution, this cannot be undone.</p>
         </div>
 
-        <Modal v-model:open="isOpen">
-          <Button color="error" @click="isOpen = true">Delete account</Button>
+        <Dialog v-model:open="isOpen">
+          <DialogTrigger as-child>
+            <Button variant="destructive">Delete account</Button>
+          </DialogTrigger>
 
-          <template #content>
+          <DialogContent>
             <form class="space-y-6" @submit="deleteUser">
-              <div class="space-y-3">
-                <h3 class="text-lg font-semibold">Are you sure you want to delete your account?</h3>
-                <p class="text-sm text-muted">
+              <DialogHeader>
+                <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
+                <DialogDescription>
                   Once your account is deleted, all of its resources and data will also be permanently
                   deleted. Please enter your password to confirm you would like to permanently delete
                   your account.
-                </p>
-              </div>
+                </DialogDescription>
+              </DialogHeader>
 
               <div class="grid gap-2">
                 <label for="password" class="sr-only">Password</label>
@@ -106,17 +108,17 @@ const DeleteUserMock = {
                 <InputError :message="form.errors.password" />
               </div>
 
-              <div class="flex justify-end gap-2">
-                <Button color="neutral" variant="outline" @click="closeModal">
+              <DialogFooter>
+                <Button variant="outline" @click="closeModal">
                   Cancel
                 </Button>
-                <Button type="submit" color="error" :loading="form.processing">
+                <Button type="submit" variant="destructive" :disabled="form.processing">
                   Delete account
                 </Button>
-              </div>
+              </DialogFooter>
             </form>
-          </template>
-        </Modal>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   `,
