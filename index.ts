@@ -33,6 +33,7 @@ import Heading from './src/components/Heading.vue';
 import HeadingSmall from './src/components/HeadingSmall.vue';
 import AppearanceTabs from './src/components/AppearanceTabs.vue';
 import DeleteUser from './src/components/DeleteUser.vue';
+import PlaceholderPattern from './src/components/PlaceholderPattern.vue';
 
 // Plugins
 import i18n from './src/plugins/i18n.ts';
@@ -159,6 +160,7 @@ export {
     HeadingSmall,
     AppearanceTabs,
     DeleteUser,
+    PlaceholderPattern,
     // Composables
     useAppearance,
     useAppNavigation,
