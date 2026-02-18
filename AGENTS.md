@@ -119,6 +119,7 @@ The bun runtime is being used instead of node.
 ## Structure
 
 - `./src/components` - Custom craft components (navigation, layouts, etc.)
+- `./src/components/ai` - AI chat components (prompt-input, chat-conversation, chat-message, etc.)
 - `./src/composables` - Vue composables (useAppearance, useInitials, useLanguage)
 - `./src/layouts` - Layout components for apps
 - `./src/vite` - Vite plugin configuration
@@ -126,6 +127,62 @@ The bun runtime is being used instead of node.
 - `./src/stories` - Component stories and examples
 - `./.storybook` - Storybook configuration and mocks
 - `index.ts` - Main exports
+
+### AI Component Architecture
+
+AI components live under `src/components/ai/` and follow a compound component pattern:
+
+| Directory | Purpose |
+|-----------|---------|
+| `prompt-input/` | Chat input with file attachments, keyboard shortcuts |
+| `chat-conversation/` | Scroll container with stick-to-bottom behavior |
+| `chat-message/` | Role-aware message layout (user/assistant) |
+| `chat-message-action/` | Action buttons with optional tooltips |
+| `chat-response/` | Token-based markdown rendering with component overrides |
+| `chat-suggestions/` | Horizontal pill buttons for follow-up suggestions |
+
+Each component family follows this file structure:
+
+```
+component-name/
+  types.ts              # Interfaces, InjectionKey
+  useComponentName.ts   # inject() composable for child access
+  ComponentName.vue     # Root: provide() context
+  ComponentChild.vue    # Children: use composable or group modifiers
+  index.ts              # Barrel exports
+```
+
+Key conventions:
+- Root components `provide()` context, children `inject()` via composable
+- Context type uses `InjectionKey<T>` from Vue
+- Composable throws if used outside root component
+- All components accept `class?: HTMLAttributes["class"]` and merge with `cn()`
+- Barrel exports: types first, then composables, then components as `default` exports
+
+#### ChatResponse Token Rendering
+
+`ChatResponse` uses `marked.lexer()` to produce an AST, then `renderTokens()` maps each token to a VNode. When `components` is omitted or empty, `chatResponseDefaults` is used. Consumers override individual elements via the `components` prop (merged over defaults):
+
+```vue
+<ChatResponse :content="msg" />
+<ChatResponse :content="msg" :components="{ code: MyCodeBlock }" />
+```
+
+File structure:
+```
+chat-response/
+  types.ts              # ChatResponseComponents type map
+  renderTokens.ts       # Token[] + ComponentMap → VNode[]
+  ChatResponse.vue      # marked.lexer() + renderTokens()
+  components/           # Styled default components (one per token type)
+    ChatResponseHeading.vue
+    ChatResponseCode.vue
+    ...
+    index.ts            # Exports all + chatResponseDefaults preset
+  index.ts              # Barrel exports
+```
+
+Styled rendering uses `chatResponseDefaults` by default.
 
 ## Testing
 
