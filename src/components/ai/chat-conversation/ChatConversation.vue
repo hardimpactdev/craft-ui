@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const { scrollRef, contentRef, isAtBottom, scrollToBottom } =
-  useStickToBottom()
+  useStickToBottom({ initial: 'instant' })
 
 const isAtBottomSafe = computed(() => isAtBottom.value ?? true)
 
