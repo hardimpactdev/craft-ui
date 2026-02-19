@@ -4,6 +4,7 @@ import ChatConversation from "./ChatConversation.vue"
 import ChatConversationContent from "./ChatConversationContent.vue"
 import ChatConversationEmptyState from "./ChatConversationEmptyState.vue"
 import ChatConversationScrollButton from "./ChatConversationScrollButton.vue"
+import ChatConversationLoadMore from "./ChatConversationLoadMore.vue"
 import ChatMessage from "../chat-message/ChatMessage.vue"
 import ChatMessageContent from "../chat-message/ChatMessageContent.vue"
 import ChatResponse from "../chat-response/ChatResponse.vue"
@@ -186,7 +187,7 @@ export const Streaming: Story = {
         setTimeout(() => {
           messages.value.push({
             id: 2,
-            role: "assistant",
+            role: "assistant" as const,
             content: "",
           })
 
@@ -211,6 +212,108 @@ export const Streaming: Story = {
     template: `
       <div class="flex h-[400px] flex-col border rounded-lg">
         <ChatConversation class="flex-1">
+          <ChatConversationContent>
+            <ChatMessage
+              v-for="msg in messages"
+              :key="msg.id"
+              :role="msg.role"
+            >
+              <ChatMessageContent>
+                <ChatResponse v-if="msg.role === 'assistant'" :content="msg.content" />
+                <span v-else>{{ msg.content }}</span>
+              </ChatMessageContent>
+            </ChatMessage>
+          </ChatConversationContent>
+          <ChatConversationScrollButton />
+        </ChatConversation>
+      </div>
+    `,
+  }),
+}
+
+// Infinite scroll - load more messages when scrolling to top
+export const InfiniteScroll: Story = {
+  render: () => ({
+    components: {
+      ChatConversation,
+      ChatConversationContent,
+      ChatConversationScrollButton,
+      ChatConversationLoadMore,
+      ChatMessage,
+      ChatMessageContent,
+      ChatResponse,
+    },
+    setup() {
+      const PAGE_SIZE = 5
+      const TOTAL_MESSAGES = 25
+      
+      // Generate all messages (oldest first)
+      const allMessages = Array.from({ length: TOTAL_MESSAGES }, (_, i) => ({
+        id: i + 1,
+        role: (i % 2 === 0 ? "user" : "assistant") as "user" | "assistant",
+        content:
+          i % 2 === 0
+            ? `Question ${i + 1}: Tell me more about topic ${i + 1}.`
+            : `This is a detailed response to question ${i + 1}. It contains enough text to demonstrate scrolling behavior in the chat conversation container.`,
+      }))
+
+      // Start with only the most recent messages
+      const displayedCount = ref(PAGE_SIZE)
+      const messages = ref(allMessages.slice(-PAGE_SIZE))
+      const isLoadingMore = ref(false)
+      const hasMore = ref(TOTAL_MESSAGES > PAGE_SIZE)
+
+      const handleLoadMore = async () => {
+        if (isLoadingMore.value || !hasMore.value) return
+
+        isLoadingMore.value = true
+
+        // Simulate API delay
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+
+        // Calculate how many more messages to add
+        const currentStart = allMessages.length - displayedCount.value
+        const newStart = Math.max(0, currentStart - PAGE_SIZE)
+        const newMessages = allMessages.slice(newStart, currentStart)
+
+        // Get scroll height before adding messages
+        const scrollContainer = document.querySelector('#chat-conversation')
+        const previousScrollHeight = scrollContainer?.scrollHeight || 0
+
+        // Prepend older messages
+        messages.value = [...newMessages, ...messages.value]
+        displayedCount.value += newMessages.length
+
+        // Check if we've loaded all messages
+        hasMore.value = displayedCount.value < TOTAL_MESSAGES
+
+        // Maintain scroll position after prepending
+        await nextTick()
+        const newScrollHeight = scrollContainer?.scrollHeight || 0
+        const heightDifference = newScrollHeight - previousScrollHeight
+        if (scrollContainer) {
+          scrollContainer.scrollTop = heightDifference + 50
+        }
+
+        isLoadingMore.value = false
+      }
+
+      return {
+        messages,
+        isLoadingMore,
+        hasMore,
+        handleLoadMore,
+      }
+    },
+    template: `
+      <div class="flex h-[400px] flex-col border rounded-lg">
+        <ChatConversation 
+          class="flex-1"
+          :has-more-messages="hasMore"
+          :is-loading-more="isLoadingMore"
+          @load-more="handleLoadMore"
+        >
+          <ChatConversationLoadMore />
           <ChatConversationContent>
             <ChatMessage
               v-for="msg in messages"
