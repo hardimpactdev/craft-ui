@@ -74,7 +74,8 @@
     "test": "vitest --project=unit --run",
     "test:watch": "vitest --project=unit",
     "test:storybook": "vitest --project=storybook --run",
-    "test:all": "vitest --run"
+    "test:all": "vitest --run",
+    "style-watch": "npx @tailwindcss/cli -i ./src/style.css -o ./dist/craft-ui.css --watch"
   },
   "dependencies": {
     "@iconify/vue": "^5.0.0",

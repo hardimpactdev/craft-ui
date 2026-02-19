@@ -22,7 +22,6 @@ const isAtBottomSafe = computed(() => isAtBottom.value ?? true)
 
 // Track scroll position for infinite scroll
 const isAtTop = ref(false)
-const scrollTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 const lastScrollHeight = ref(0)
 
 // Internal loading state that can be controlled via prop or internal
@@ -37,7 +36,7 @@ const hasMoreMessagesSafe = computed(() => props.hasMoreMessages ?? internalHasM
 const handleScroll = async () => {
   if (!scrollRef.value) return
   
-  const { scrollTop, scrollHeight, clientHeight } = scrollRef.value
+  const { scrollTop, scrollHeight } = scrollRef.value
   
   // Check if at top (within 50px threshold)
   const atTop = scrollTop < 50

@@ -11,7 +11,7 @@ const props = defineProps<{
   <div
     :class="
       cn(
-        'group-[.is-user]:bg-secondary group-[.is-user]:rounded-lg group-[.is-user]:px-4 group-[.is-user]:py-3',
+        'group-[.is-user]:bg-secondary group-[.is-user]:rounded-xl group-[.is-user]:px-3.5 group-[.is-user]:py-2',
         'group-[.is-assistant]:text-foreground',
         props.class
       )
