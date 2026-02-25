@@ -1,5 +1,9 @@
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import tailwindcss from '@tailwindcss/vite';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -28,6 +32,13 @@ const config: StorybookConfig = {
     // Add TailwindCSS plugin for Storybook
     config.plugins = config.plugins || [];
     config.plugins.push(tailwindcss());
+
+    // Mock @inertiajs/vue3 so real components (AppSidebar, NavMain, etc.) work
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@inertiajs/vue3': path.resolve(__dirname, 'inertia-vue3-mock.ts'),
+    };
 
     // Override library-specific settings for Storybook
     if (config.build) {

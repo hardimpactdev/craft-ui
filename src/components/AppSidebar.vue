@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from '@/components/sidebar';
 import AppLogo from '@/components/AppLogo.vue';
 import type { NavItem, User } from '@/types';
@@ -39,7 +40,7 @@ withDefaults(
 </script>
 
 <template>
-  <Sidebar collapsible="icon" variant="inset">
+  <Sidebar collapsible="icon">
     <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
@@ -62,6 +63,7 @@ withDefaults(
       <NavFooter :items="footerNavItems" />
       <NavUser v-if="user" :user="user" :on-settings="onSettings" :on-logout="onLogout" />
     </SidebarFooter>
+    <SidebarRail />
   </Sidebar>
   <slot />
 </template>

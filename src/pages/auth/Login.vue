@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import AuthLayout from '@/layouts/auth/AuthLayout.vue';
+import type { AuthLayoutVariant } from '@/pages/auth/types';
 import TextLink from '@/components/TextLink.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/button';
@@ -40,6 +41,10 @@ const props = withDefaults(
     processing?: boolean;
     /** Initial form values */
     modelValue?: Partial<LoginForm>;
+    /** Layout variant */
+    variant?: AuthLayoutVariant;
+    /** App name (shown in split layout) */
+    name?: string;
   }>(),
   {
     canResetPassword: true,
@@ -77,6 +82,8 @@ const handleSubmit = () => {
     title="Log in to your account"
     description="Enter your email and password below to log in"
     :logo-link="logoLink"
+    :variant="variant"
+    :name="name"
   >
     <template #logo>
       <slot name="logo" />

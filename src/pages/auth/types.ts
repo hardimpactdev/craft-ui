@@ -70,3 +70,6 @@ export interface TwoFactorErrors {
   code?: string;
   recovery_code?: string;
 }
+
+// Layout variant
+export type AuthLayoutVariant = 'simple' | 'split';

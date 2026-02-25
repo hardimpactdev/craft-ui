@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/sidebar';
-import UserInfo from '@/components/UserInfo.vue';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
 import UserMenuContent from '@/components/UserMenuContent.vue';
 import type { User } from '@/types';
 
@@ -31,7 +31,14 @@ defineProps<{
             size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
-            <UserInfo :user="user" />
+            <Avatar class="h-8 w-8 rounded-lg">
+              <AvatarImage v-if="user.avatar" :src="user.avatar" :alt="user.name" />
+              <AvatarFallback class="rounded-lg">{{ user.name?.[0] || '?' }}</AvatarFallback>
+            </Avatar>
+            <div class="grid flex-1 text-left text-sm leading-tight">
+              <span class="truncate font-medium">{{ user.name }}</span>
+              <span class="truncate text-xs text-muted-foreground">{{ user.email }}</span>
+            </div>
             <ChevronsUpDown class="ml-auto size-4" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>

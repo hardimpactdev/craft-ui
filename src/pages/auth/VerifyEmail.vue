@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AuthLayout from '@/layouts/auth/AuthLayout.vue';
+import type { AuthLayoutVariant } from '@/pages/auth/types';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/button';
 import { Spinner } from '@/components/spinner';
@@ -14,6 +15,10 @@ withDefaults(
     logoLink?: string;
     /** Whether form is submitting */
     processing?: boolean;
+    /** Layout variant */
+    variant?: AuthLayoutVariant;
+    /** App name (shown in split layout) */
+    name?: string;
   }>(),
   {
     logoutUrl: '/logout',
@@ -41,6 +46,8 @@ const handleLogout = () => {
     title="Verify email"
     description="Please verify your email address by clicking on the link we just emailed to you."
     :logo-link="logoLink"
+    :variant="variant"
+    :name="name"
   >
     <template #logo>
       <slot name="logo" />

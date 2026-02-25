@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3';
 import { Home, FolderOpen, Settings, Users, BarChart3, Mail, Calendar, FileText, Bell } from 'lucide-vue-next';
 import NavMain from './NavMain.vue';
+import { Sidebar, SidebarContent, SidebarProvider } from '@/components/sidebar';
 import type { NavItem } from '@/types';
 
 const defaultItems: NavItem[] = [
@@ -29,15 +30,30 @@ const meta: Meta<typeof NavMain> = {
     items: {
       description: 'Array of navigation items with title, href, and optional icon',
     },
-    collapsed: {
-      description: 'Whether the navigation is in collapsed state (shows only icons)',
-      control: 'boolean',
+    label: {
+      description: 'Group label displayed above the navigation items',
+      control: 'text',
     },
   },
+  decorators: [
+    (story) => ({
+      components: { SidebarProvider, Sidebar, SidebarContent, story },
+      template: `
+        <SidebarProvider>
+          <Sidebar collapsible="icon">
+            <SidebarContent>
+              <story />
+            </SidebarContent>
+          </Sidebar>
+        </SidebarProvider>
+      `,
+    }),
+  ],
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Main navigation component for the sidebar. Uses Inertia\'s usePage() to determine active state based on current URL. In Storybook, active state detection will not work but styling is visible.',
+        component: 'Main navigation component for the sidebar. Uses sidebar primitives for proper collapse-to-icon behavior with tooltips.',
       },
     },
   },
@@ -52,23 +68,10 @@ export const Default: Story = {
     setup() {
       return { items: defaultItems, args };
     },
-    template: '<NavMain :items="items" :collapsed="args.collapsed" />',
+    template: '<NavMain :items="items" :label="args.label" />',
   }),
   args: {
-    collapsed: false,
-  },
-};
-
-export const Collapsed: Story = {
-  render: (args) => ({
-    components: { NavMain },
-    setup() {
-      return { items: defaultItems, args };
-    },
-    template: '<NavMain :items="items" :collapsed="args.collapsed" />',
-  }),
-  args: {
-    collapsed: true,
+    label: 'Platform',
   },
 };
 
@@ -78,16 +81,16 @@ export const ManyItems: Story = {
     setup() {
       return { items: manyItems, args };
     },
-    template: '<NavMain :items="items" :collapsed="args.collapsed" />',
+    template: '<NavMain :items="items" :label="args.label" />',
   }),
   args: {
-    collapsed: false,
+    label: 'Platform',
   },
 };
 
 export const Empty: Story = {
   render: () => ({
     components: { NavMain },
-    template: '<NavMain :items="[]" :collapsed="false" />',
+    template: '<NavMain :items="[]" />',
   }),
 };

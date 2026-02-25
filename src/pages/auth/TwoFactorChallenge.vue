@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import AuthLayout from '@/layouts/auth/AuthLayout.vue';
+import type { AuthLayoutVariant } from '@/pages/auth/types';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
@@ -28,6 +29,10 @@ withDefaults(
     errors?: TwoFactorErrors;
     /** Whether form is submitting */
     processing?: boolean;
+    /** Layout variant */
+    variant?: AuthLayoutVariant;
+    /** App name (shown in split layout) */
+    name?: string;
   }>(),
   {
     logoLink: '/',
@@ -82,6 +87,8 @@ const handleRecoverySubmit = () => {
     :title="authConfigContent.title"
     :description="authConfigContent.description"
     :logo-link="logoLink"
+    :variant="variant"
+    :name="name"
   >
     <template #logo>
       <slot name="logo" />
