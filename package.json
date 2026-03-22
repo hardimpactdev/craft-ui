@@ -79,8 +79,8 @@
   },
   "dependencies": {
     "@iconify/vue": "^5.0.0",
-    "@inertiajs/core": "^2.3.16",
-    "@inertiajs/vue3": "^2.3.16",
+    "@inertiajs/core": "3.0.0-beta.5",
+    "@inertiajs/vue3": "3.0.0-beta.5",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/vue-table": "^8.21.3",
     "@tiptap/extension-bubble-menu": "^3.20.0",
@@ -144,7 +144,7 @@
     "vue-tsc": "^3.2.5"
   },
   "peerDependencies": {
-    "@inertiajs/vue3": "^2.0.0",
+    "@inertiajs/vue3": "^2.0.0 || ^3.0.0-beta.0",
     "@tailwindcss/vite": "^4.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "laravel-vite-plugin": "^2.0.1",
