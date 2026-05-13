@@ -4,12 +4,11 @@ import { readFileSync } from 'fs';
 import { homedir } from 'os';
 
 /**
- * Configure Vite dev server for Laravel apps behind a reverse proxy (Caddy/nginx)
+ * Configure Vite dev server for Orbit-managed Laravel workspaces.
  *
- * Handles:
- * - HMR WebSocket connection through the proxy (wss://app.test:443)
- * - Correct origin for CORS and asset URLs
- * - Binding to all interfaces for proxy access
+ * Reads TLS cert paths from VITE_DEV_SERVER_KEY / VITE_DEV_SERVER_CERT when
+ * Orbit's supervisor unit supplies them (gateway-issued per-FQDN leaf), and
+ * falls back to the local wildcard cert otherwise.
  */
 export function getServerConfig(mode: string): ServerOptions {
     const env = loadEnv(mode, process.cwd());
@@ -27,33 +26,19 @@ export function getServerConfig(mode: string): ServerOptions {
 
     try {
         const url = new URL(appUrl);
-
         const certsPath = `${homedir()}/.config/orbit/certs`;
+        const keyPath = env.VITE_DEV_SERVER_KEY ?? `${certsPath}/wildcard.key`;
+        const certPath = env.VITE_DEV_SERVER_CERT ?? `${certsPath}/wildcard.crt`;
 
         return {
-            // Accept connections from reverse proxy
             host: url.hostname,
-
-            // // Tell Vite the public origin for asset URLs
-            // origin: appUrl,
-
-            // // Configure HMR to connect through the reverse proxy
-            // // Without this, browser would try localhost:5173 directly
-            // hmr: {
-            //     host: url.hostname,
-            //     protocol: isHttps ? 'wss' : 'ws',
-            //     clientPort: isHttps ? 443 : (parseInt(url.port) || 80),
-            // },
-
-            // Prevent ELOOP errors from circular symlinks in workspaces
             watch: {
                 followSymlinks: false,
                 ignored: ['**/vendor/**', '**/node_modules/**'],
             },
-
             https: {
-                key: readFileSync(`${certsPath}/wildcard.key`),
-                cert: readFileSync(`${certsPath}/wildcard.crt`),
+                key: readFileSync(keyPath),
+                cert: readFileSync(certPath),
             },
         };
     } catch {
